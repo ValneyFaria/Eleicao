@@ -8,7 +8,15 @@ public class Server implements Eleicao {
     ArrayList<Candidato> votacao = new ArrayList<Candidato>();
 
     public int votar(int nCandidato, int nVotante) {
-        // Se o numero do candidato está na lista
+        // Verifica se o Votante já votou
+        for (Candidato c : votacao) {
+            if(c.getVotou() == true) {
+                System.out.println("Voto Já Computado");
+                return;
+            }
+        }
+
+        // Verifica se o numero do candidato está na lista
         if(votacao.contains(nCandidato)) {
             // Se o numero do nVotante é igual ao de um candidato
             if(votacao.contains(nVotante)) {
@@ -19,6 +27,14 @@ public class Server implements Eleicao {
             for (Candidato c : votacao) {
                 if(c.getNCandidato() == nCandidato) {
                     c.setNVotos();
+                    return;
+                }
+            }
+
+            // Marca que o Eleitor Votou
+            for (Candidato c : votacao) {
+                if(c.getNCandidato() == nVotante) {
+                    c.setVotou();
                 }
             }
             return;
