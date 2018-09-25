@@ -3,10 +3,10 @@ public class Candidato {
     private int nVotos = 0;
     private boolean votou = false;
 
-    private Candidato() {
+    Candidato() {
     }
 
-    private Candidato(int nCandidato) {
+    Candidato(int nCandidato) {
         this.nCandidato = nCandidato;
         this.nVotos += 1;
     }
@@ -24,7 +24,7 @@ public class Candidato {
     }
 
     // Incrementa o numero de votos do candidato
-    void setNVotos(int nVotos) {
+    void votarCandidato() {
         this.nVotos += 1;
     }
 
