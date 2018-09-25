@@ -20,7 +20,7 @@ public class Candidato {
     }
 
     int getNVotos() {
-        return this.nCandidato;
+        return this.nVotos;
     }
 
     // Incrementa o numero de votos do candidato

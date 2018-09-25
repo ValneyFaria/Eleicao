@@ -30,10 +30,12 @@ public class Server implements Eleicao {
     }
 
     public int votar(int nCandidato, int nVotante) {
+        System.out.println("Método votar()\n");
         // Verifica se o Votante já votou
-        for (Candidato c : votacao) {
-            if (c.getVotou() == true) {
-                System.out.println("ERRO! Voto Já Computado");
+
+        for (int i = 0; i < votacao.size(); i++) {
+            if (votacao.get(i).getNCandidato() == nVotante && votacao.get(i).getVotou()) {
+                System.out.println("Voto já Computado!");
                 return 0;
             }
         }
@@ -54,9 +56,10 @@ public class Server implements Eleicao {
             }
 
             // Marca que o Eleitor Votou
-            for (Candidato c : votacao) {
-                if (c.getNCandidato() == nVotante) {
-                    c.setVotou();
+            for (int i = 0; i < votacao.size(); i++) {
+                if (votacao.get(i).getNCandidato() == nVotante) {
+                    votacao.get(i).setVotou();
+                    i = votacao.size();
                 }
             }
             return 1;
@@ -84,39 +87,38 @@ public class Server implements Eleicao {
     }
 
     public int resultadoParcial(int nCandidato) {
+        System.out.println("Método resultadoParcial()\n");
         int nVotos = 0;
 
         for (Candidato c : votacao) {
             if (c.getNCandidato() == nCandidato) {
                 nVotos = c.getNVotos();
-                System.out.println("O candidato " + nCandidato + " recebeu " + nVotos + " votos!");
                 return nVotos;
             }
         }
 
-        System.out.println("O candidato " + nCandidato + " recebeu " + nVotos + " votos!");
         return nVotos;
     }
 
+    // Retorna o numero do candidato com mais votos
     public int resultado() {
+        System.out.println("Método resultado()\n");
         // 20 pois não há muitos alunos na turma
-        int maior = 20;
-        Candidato Ca = null;
+        int maior = 0, nCandidato = 0;
 
-        for (Candidato c : votacao) {
-            if (c.getNVotos() >= maior) {
-                maior = c.getNVotos();
-                Ca = c;
+        for (int i = 0; i < votacao.size(); i++) {
+            // Verifica se o nVotos do candidato é o maior
+            if (votacao.get(i).getNVotos() >= maior) {
+                maior = votacao.get(i).getNVotos();
+                nCandidato = votacao.get(i).getNCandidato();
             }
         }
-
-        System.out.println("O candidato " + Ca.getNCandidato() + " foi eleito com " + Ca.getNVotos() + " votos!");
-        return maior;
+        return nCandidato;
     }
 
-	public String sayHello() throws RemoteException {
-		System.out.println("HELLO WORLD!");
-		return null;
-	}
+    public String sayHello() throws RemoteException {
+        System.out.println("HELLO WORLD!");
+        return null;
+    }
 
 }

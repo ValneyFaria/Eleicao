@@ -30,9 +30,15 @@ public class Client {
 				System.out.println("1 - Votar num candidato\n");
 				System.out.println("2 - Ver o resultado de um candidato\n");
 				System.out.println("3 - Ver o resultado da eleição\n");
+				System.out.println("0 - Finalizar");
+
 				opt = s.nextInt();
 
 				switch (opt) {
+
+				case 0:
+					opt = 0;
+					break;
 				case 1:
 					System.out.println("Insira o numero do candidato:");
 					nCandidato = s.nextInt();
@@ -54,17 +60,15 @@ public class Client {
 
 					a = stub.resultadoParcial(nCandidato);
 
-					if (a == 1) {
-						System.out.println("OPERAÇÃO CONCLUÍDA COM SUCESSO!");
-					} else {
-						System.out.println("ERRO NA VOTAÇÃO!");
-					}
+					System.out.printf("O candidato %d teve %d votos!\n\n", nCandidato, a);
 
 					break;
 
 				case 3:
 					System.out.println("COMPUTANDO RESULTADO...");
-					stub.resultado();
+					a = stub.resultado();
+
+					System.out.printf("O candidato %d foi o mais votado!\n", a);
 
 					break;
 
@@ -72,7 +76,10 @@ public class Client {
 					System.out.println("ELEIÇÃO CONCLUÍDA!");
 					break;
 				}
+
 			}
+
+			s.close();
 
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
