@@ -26,9 +26,8 @@ public class Server implements Eleicao {
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-		}
-	}
-
+        }
+    }
 
     public int votar(int nCandidato, int nVotante) {
         // Verifica se o Votante já votou
@@ -74,13 +73,14 @@ public class Server implements Eleicao {
     }
 
     // Verifica se um candidato já está presente na lista
-    public Candidato buscaCandidato(int nCandidato) {
-        for (Candidato c : votacao) {
-            if (c.getNCandidato() == nCandidato) {
-                return c;
+    public boolean buscaCandidato(int nCandidato) {
+
+        for (Candidato d : votacao) {
+            if (d.getNCandidato() == nCandidato) {
+                return true;
             }
         }
-        return c;
+        return false;
     }
 
     public int resultadoParcial(int nCandidato) {
@@ -101,7 +101,7 @@ public class Server implements Eleicao {
     public int resultado() {
         // 20 pois não há muitos alunos na turma
         int maior = 20;
-        Candidato Ca;
+        Candidato Ca = null;
 
         for (Candidato c : votacao) {
             if (c.getNVotos() >= maior) {
@@ -110,8 +110,13 @@ public class Server implements Eleicao {
             }
         }
 
-        System.out.println("O candidato " + Ca.getNCandidato() + " foi eleito com " + nVotos + " votos!");
-        return resultado;
+        System.out.println("O candidato " + Ca.getNCandidato() + " foi eleito com " + Ca.getNVotos() + " votos!");
+        return maior;
     }
+
+	public String sayHello() throws RemoteException {
+		System.out.println("HELLO WORLD!");
+		return null;
+	}
 
 }

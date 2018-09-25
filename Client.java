@@ -1,8 +1,5 @@
-import java.rmi.registry.Registry;
 import java.util.Scanner;
-
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
-
+import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 
 public class Client {
@@ -11,7 +8,8 @@ public class Client {
 	}
 
 	public static void main(String[] args) {
-		Scanner s = new Scanner();
+		Scanner s = new Scanner(System.in);
+		int a;
 		int opt = 1, nCandidato = 0, nVotante = 0;
 
 		String host = (args.length < 1) ? null : args[0];
@@ -41,19 +39,22 @@ public class Client {
 					System.out.println("Agora insira o seu numero:");
 					nVotante = s.nextInt();
 
-					if (stub.votar(nCandidato, nVotante)) {
+					a = stub.votar(nCandidato, nVotante);
+
+					if (a == 1) {
 						System.out.println("VOTAÇÃO CONCLUÍDA!");
 					} else {
 						System.out.println("ERRO NA VOTAÇÃO!");
 					}
-
 					break;
 
 				case 2:
 					System.out.println("Insira o numero do candidato:");
 					nCandidato = s.nextInt();
 
-					if (stub.resultadoParcial(nCandidato)) {
+					a = stub.resultadoParcial(nCandidato);
+
+					if (a == 1) {
 						System.out.println("OPERAÇÃO CONCLUÍDA COM SUCESSO!");
 					} else {
 						System.out.println("ERRO NA VOTAÇÃO!");

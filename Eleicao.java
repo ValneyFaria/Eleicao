@@ -4,9 +4,9 @@ import java.rmi.RemoteException;
 public interface Eleicao extends Remote {
     String sayHello() throws RemoteException;
 
-    public int votar(int nCandidato, int nVotante);
+    int votar(int nCandidato, int nVotante) throws RemoteException;
 
-    public int resultadoParcial(int nCandidato);
+    int resultadoParcial(int nCandidato) throws RemoteException;
 
-    public int resultado();
+    int resultado() throws RemoteException;
 }
