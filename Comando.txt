@@ -1,0 +1,1 @@
+java -classpath ./ -Djava.rmi.server.codebase=file:. -Djava.rmi.server.hostname="172.18.4.45" Server

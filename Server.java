@@ -5,120 +5,137 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class Server implements Eleicao {
-    ArrayList<Candidato> votacao = new ArrayList<Candidato>();
+	ArrayList<Candidato> candidatosList = new ArrayList<Candidato>();
+	ArrayList<Candidato> eleitoresList = new ArrayList<Candidato>();
 
-    public static void main(String args[]) {
+	Server() {
+		candidatosList.add(new Candidato(96));
+		candidatosList.add(new Candidato(12));
+		candidatosList.add(new Candidato(13));
+		candidatosList.add(new Candidato(51));
+		candidatosList.add(new Candidato(20));
+		candidatosList.add(new Candidato(17));
+	}
 
-        try {
-            Server obj = new Server();
-            // Converte o Objeto para um Unicast Remote Object
-            Eleicao stub = (Eleicao) UnicastRemoteObject.exportObject(obj, 0);
+	public static void main(String args[]) {
 
-            // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("Eleicao", stub);
-            // O cliente conhece apenas a interface e não a chamada da classe
+		try {
+			Server obj = new Server();
+			// Converte o Objeto para um Unicast Remote Object
+			Eleicao stub = (Eleicao) UnicastRemoteObject.exportObject(obj, 0);
 
-            System.err.println("Servidor Executando!");
+			// Bind the remote object's stub in the registry
+			Registry registry = LocateRegistry.getRegistry();
+			registry.rebind("Eleicao", stub);
+			// O cliente conhece apenas a interface e não a chamada da classe
 
-            System.out.println("INICIANDO VOTACAO:");
+			System.err.println("Servidor Executando!");
 
-        } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-        }
-    }
+			System.out.println("INICIANDO VOTACAO:");
 
-    public int votar(int nCandidato, int nVotante) {
-        System.out.println("Método votar()\n");
-        // Verifica se o Votante já votou
+		} catch (Exception e) {
+			System.err.println("Server exception: " + e.toString());
+			e.printStackTrace();
+		}
+	}
 
-        for (int i = 0; i < votacao.size(); i++) {
-            if (votacao.get(i).getNCandidato() == nVotante && votacao.get(i).getVotou()) {
-                System.out.println("Voto já Computado!");
-                return 0;
-            }
-        }
+	public int votar(int nCandidato, int nVotante) throws RemoteException {
+		System.out.println("Método votar()\n");
 
-        // Verifica se o numero do candidato está na lista
-        if (buscaCandidato(nCandidato)) {
-            // Se o numero do nVotante é igual ao de um candidato
-            if (buscaCandidato(nVotante)) {
-                System.out.println("ERRO! Não é possível votar em si mesmo!");
-                return 0;
-            }
-            // Busca o Candidato passado e seta um voto para ele
-            for (Candidato c : votacao) {
-                if (c.getNCandidato() == nCandidato) {
-                    c.votarCandidato();
-                    return 1;
-                }
-            }
+		// Verifica se o Eleitor está votando em si mesmo
+		if (nCandidato == nVotante) {
+			System.out.println("ERRO! Não é possível votar em si mesmo!");
+			return 1;
+		}
 
-            // Marca que o Eleitor Votou
-            for (int i = 0; i < votacao.size(); i++) {
-                if (votacao.get(i).getNCandidato() == nVotante) {
-                    votacao.get(i).setVotou();
-                    i = votacao.size();
-                }
-            }
-            return 1;
-        }
+		// Verifica se o Votante já votou
+		for (int i = 0; i < eleitoresList.size(); i++) {
+			if (eleitoresList.get(i).getNCandidato() == nVotante) {
+				if (eleitoresList.get(i).getVotou() == true) {
+					System.out.println("Voto já Computado!");
+					// return 2; // Tratamento de Erro
+					return 1;
+				}
+			}
+		}
 
-        // Senao, adiciona o novo candidato na lista
-        Candidato c = new Candidato(nCandidato);
-        // Marca que o candidato votou
-        c.setVotou();
-        // Dá um voto para o candidato
-        votacao.add(c);
+		// Verifica se o numero do candidato está na lista
+		if (buscaCandidato(nCandidato)) {
+			// Se o numero do nVotante é igual ao de um candidato
+			if (nVotante == nCandidato) {
+				System.out.println("ERRO! Não é possível votar em si mesmo!");
+				// return 3; // Tratamento de Erro
+				return 1;
+			}
+			// Busca o Candidato passado e seta um voto para ele
+			for (Candidato c : candidatosList) {
+				if (c.getNCandidato() == nCandidato) {
+					System.out.println("Setando Voto!");
+					c.votarCandidato();
+					eleitoresList.add(new Candidato(nVotante));
+					break;
+				}
+			}
 
-        return 1;
-    }
+			// Marca que o Eleitor Votou
+			for (int i = 0; i < eleitoresList.size(); i++) {
+				if (eleitoresList.get(i).getNCandidato() == nVotante) {
+					eleitoresList.get(i).setVotou();
+					System.out.println("Marcando voto");
+					i = eleitoresList.size();
+				}
+			}
+			return 0;
+		} else {
+			// Senao, adiciona o novo candidato na lista
+			Candidato c = new Candidato();
+			// Marca que o candidato votou
+			c.setVotou();
+			// Dá um voto para o candidato
+			candidatosList.add(c);
+		}
 
-    // Verifica se um candidato já está presente na lista
-    public boolean buscaCandidato(int nCandidato) {
+		return 0;
+	}
 
-        for (Candidato d : votacao) {
-            if (d.getNCandidato() == nCandidato) {
-                return true;
-            }
-        }
-        return false;
-    }
+	// Verifica se um candidato já está presente na lista de Candidatos
+	public boolean buscaCandidato(int nCandidato) {
+		for (int i = 0; i < candidatosList.size(); i++) {
+			System.out.println("Buscando Candidato");
+			if (candidatosList.get(i).getNCandidato() == nCandidato) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public int resultadoParcial(int nCandidato) {
-        System.out.println("Método resultadoParcial()\n");
-        int nVotos = 0;
+	public int resultadoParcial(int nCandidato) throws RemoteException {
+		System.out.println("Método resultadoParcial()\n");
+		int nVotos = 0;
 
-        for (Candidato c : votacao) {
-            if (c.getNCandidato() == nCandidato) {
-                nVotos = c.getNVotos();
-                return nVotos;
-            }
-        }
+		for (Candidato c : candidatosList) {
+			if (c.getNCandidato() == nCandidato) {
+				nVotos = c.getNVotos();
+				return nVotos;
+			}
+		}
 
-        return nVotos;
-    }
+		return nVotos;
+	}
 
-    // Retorna o numero do candidato com mais votos
-    public int resultado() {
-        System.out.println("Método resultado()\n");
-        // 20 pois não há muitos alunos na turma
-        int maior = 0, nCandidato = 0;
+	// Retorna o numero do candidato com mais votos
+	public int resultado() {
+		System.out.println("Método resultado()\n");
+		// 20 pois não há muitos alunos na turma
+		int maior = 0, nCandidato = 0;
 
-        for (int i = 0; i < votacao.size(); i++) {
-            // Verifica se o nVotos do candidato é o maior
-            if (votacao.get(i).getNVotos() >= maior) {
-                maior = votacao.get(i).getNVotos();
-                nCandidato = votacao.get(i).getNCandidato();
-            }
-        }
-        return nCandidato;
-    }
-
-    public String sayHello() throws RemoteException {
-        System.out.println("HELLO WORLD!");
-        return null;
-    }
-
+		for (int i = 0; i < candidatosList.size(); i++) {
+			// Verifica se o nVotos do candidato é o maior
+			if (candidatosList.get(i).getNVotos() >= maior) {
+				maior = candidatosList.get(i).getNVotos();
+				nCandidato = candidatosList.get(i).getNCandidato();
+			}
+		}
+		return nCandidato;
+	}
 }

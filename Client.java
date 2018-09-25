@@ -21,9 +21,9 @@ public class Client {
 			// armazena o stub e a sua label
 			Eleicao stub = (Eleicao) registry.lookup("Eleicao");
 			// Chama o Eleicao no servidor
-			String response = stub.sayHello();
+			// String response = stub.sayHello();
 
-			System.out.println("response: " + response);
+			// System.out.println("response: " + response);
 
 			while (opt != 0) {
 				System.out.println("Selecione uma opção:\n");
@@ -37,18 +37,24 @@ public class Client {
 				switch (opt) {
 
 				case 0:
+					// Encerra o laço
 					opt = 0;
 					break;
 				case 1:
-					System.out.println("Insira o numero do candidato:");
-					nCandidato = s.nextInt();
-					System.out.println("Agora insira o seu numero:");
+					System.out.println("Insira o seu numero identificador:");
 					nVotante = s.nextInt();
+					System.out.println("Agora, insira o numero do seu candidato:");
+					nCandidato = s.nextInt();
 
 					a = stub.votar(nCandidato, nVotante);
 
-					if (a == 1) {
+					// Sucesso
+					if (a == 0) {
 						System.out.println("VOTAÇÃO CONCLUÍDA!");
+					} else if (a == 2) {
+						System.out.println("Voto já Computado!");
+					} else if (a == 3) {
+						System.out.println("ERRO! Não é possível votar em si mesmo!");
 					} else {
 						System.out.println("ERRO NA VOTAÇÃO!");
 					}
@@ -66,6 +72,7 @@ public class Client {
 
 				case 3:
 					System.out.println("COMPUTANDO RESULTADO...");
+
 					a = stub.resultado();
 
 					System.out.printf("O candidato %d foi o mais votado!\n", a);
@@ -76,9 +83,7 @@ public class Client {
 					System.out.println("ELEIÇÃO CONCLUÍDA!");
 					break;
 				}
-
 			}
-
 			s.close();
 
 		} catch (Exception e) {
